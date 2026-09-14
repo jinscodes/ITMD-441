@@ -6,18 +6,70 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>Hello, Web!</h1>
-    <p>This is my first HTML page for this course.</p>
+    <header>
+      <h1>Hello, Web!</h1>
+      <p>This is my first HTML page for this course.</p>
+    </header>
 
-    <h2>About This Page</h2>
-    <ul>
-      <li>Item one</li>
-      <li>Item two</li>
-      <li>Item three</li>
-    </ul>
-    <a href="https://www.youtube.com/shorts/LADXkBN6jn0">
-      IOS development roadmap
-    </a>
-    <img src="./ios.png" alt="IOS roadmap" />
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </nav>
+
+    <main>
+      <h2>About This Page</h2>
+      <ul>
+        <li>Item one</li>
+        <li>Item two</li>
+        <li>Item three</li>
+      </ul>
+      <a href="https://www.youtube.com/shorts/LADXkBN6jn0">
+        IOS development roadmap
+      </a>
+      <img src="./ios.png" alt="IOS roadmap" />
+
+      <table>
+        <caption>
+          My Course Schedule
+        </caption>
+        <thead>
+          <tr>
+            <th>Week</th>
+            <th>Topic</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>4</td>
+            <td>Advanced HTML</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <form>
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="msg">Message</label>
+        <textarea id="msg" name="msg"></textarea>
+
+        <label for="referral">How did you find this page?</label>
+        <select id="referral" name="referral">
+          <option value="search">Search engine</option>
+          <option value="social">Social media</option>
+          <option value="friend">A friend</option>
+        </select>
+
+        <button type="submit">Send</button>
+      </form>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Jay Han</p>
+    </footer>
   </body>
 </html>
