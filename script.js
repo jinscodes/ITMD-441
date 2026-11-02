@@ -9,17 +9,26 @@ console.log(`${name} has completed ${labsCompleted} labs.`);
 const likeBtn = document.querySelector("#like-btn");
 const likeCount = document.querySelector("#like-count");
 const likeMessage = document.querySelector("#like-message");
+const locationBtn = document.querySelector("#location-btn");
+const locationDisplay = document.querySelector("#location-display");
+
+if (localStorage.getItem("theme") === "dark") {
+	document.body.classList.add("dark");
+}
 
 const LikeCounter = {
-  likes: 0,
+  likes: Number(localStorage.getItem("likes")) || 0,
   increment() {
     this.likes = this.likes + 1;
+    localStorage.setItem("likes", this.likes);
     this.render();
   },
   render() {
     likeCount.textContent = `${this.likes} likes`;
   },
 };
+
+LikeCounter.render();
 
 likeBtn.addEventListener("click", function () {
   LikeCounter.increment();
@@ -51,7 +60,9 @@ if (likeBtn) {
 const themeBtn = document.querySelector("#theme-btn");
 
 themeBtn.addEventListener("click", function () {
-  document.body.classList.toggle("dark");
+	document.body.classList.toggle("dark");
+	const isDark = document.body.classList.contains("dark");
+	localStorage.setItem('theme', isDark ? "dark" : "light");
 });
 
 const goals = ["HTML", "CSS", "JavaScript"];
@@ -97,3 +108,19 @@ async function loadFact() {
 }
 
 factBtn.addEventListener("click", loadFact);
+
+locationBtn.addEventListener("click", function() {
+	if(!("geolocation" in navigator)) {
+		locationDisplay.textContent = "Geolocation isn't supported.";
+		return;
+	}
+
+	navigator.geolocation.getCurrentPosition(function(position) {
+		const lat = position.coords.latitude.toFixed(2);
+		const lon = position.coords.longitude.toFixed(2);
+		locationDisplay.textContent = `You're near ${lat}, ${lon}`;
+	} , function(error) {
+		locationDisplay.textContent = "Location access was denied.";
+		console.warn(error);
+	});
+});
