@@ -1,0 +1,25 @@
+{
+  "name": "web-dev-labs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jinscodes/ITMD-441.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jinscodes/ITMD-441/issues"
+  },
+  "homepage": "https://github.com/jinscodes/ITMD-441#readme",
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

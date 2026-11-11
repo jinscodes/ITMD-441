@@ -1,10 +1,10 @@
-const name = "Ada";
+const studentName = "Ada";
 let labsCompleted = 6;
 let isEnrolled = false;
 let likes = 0;
 
 labsCompleted = labsCompleted + 1;
-console.log(`${name} has completed ${labsCompleted} labs.`);
+console.log(`${studentName} has completed ${labsCompleted} labs.`);
 
 const likeBtn = document.querySelector("#like-btn");
 const likeCount = document.querySelector("#like-count");
@@ -13,17 +13,17 @@ const locationBtn = document.querySelector("#location-btn");
 const locationDisplay = document.querySelector("#location-display");
 
 if (localStorage.getItem("theme") === "dark") {
-	document.body.classList.add("dark");
+  document.body.classList.add("dark");
 }
 
 const LikeCounter = {
   likes: Number(localStorage.getItem("likes")) || 0,
-  increment() {
+  increment(): void {
     this.likes = this.likes + 1;
-    localStorage.setItem("likes", this.likes);
+    localStorage.setItem("likes", this.likes.toString());
     this.render();
   },
-  render() {
+  render(): void {
     likeCount.textContent = `${this.likes} likes`;
   },
 };
@@ -60,23 +60,23 @@ if (likeBtn) {
 const themeBtn = document.querySelector("#theme-btn");
 
 themeBtn.addEventListener("click", function () {
-	document.body.classList.toggle("dark");
-	const isDark = document.body.classList.contains("dark");
-	localStorage.setItem('theme', isDark ? "dark" : "light");
+  document.body.classList.toggle("dark");
+  const isDark = document.body.classList.contains("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
 });
 
-const goals = ["HTML", "CSS", "JavaScript"];
+const goals: string[] = ["HTML", "CSS", "JavaScript"];
 const goalsList = document.querySelector("#goals-list");
 
-goals.forEach(function (goal) {
+goals.forEach(function (goal: string) {
   const item = document.createElement("li");
   item.textContent = goal;
   goalsList.appendChild(item);
 });
 
 function getGreetingAfterDelay() {
-  return new Promise(function(resolve) {
-    setTimeout(function() {
+  return new Promise(function (resolve) {
+    setTimeout(function () {
       resolve("Hello from the future!");
     }, 800);
   });
@@ -89,38 +89,50 @@ async function showGreeting() {
 
 showGreeting();
 
-const factBtn = document.querySelector("#fact-btn");
-const factDisplay = document.querySelector("#fact-display");
+const factBtn = document.querySelector<HTMLButtonElement>("#fact-btn");
+const factDisplay = document.querySelector<HTMLElement>("#fact-display");
+
+interface CatFact {
+  fact: string;
+  length: number;
+}
 
 async function loadFact() {
   factDisplay.textContent = "Loading...";
+  factBtn.disabled = true;
   try {
     const response = await fetch("https://catfact.ninja/fact");
     if (!response.ok) {
       throw new Error("Server responded with an error");
     }
-    const data = await response.json();
+
+    const data = (await response.json()) as CatFact;
     factDisplay.textContent = data.fact;
   } catch (error) {
     factDisplay.textContent = "Couldn't load a fact right now. Try again.";
     console.error(error);
+  } finally {
+    factBtn.disabled = false;
   }
 }
 
 factBtn.addEventListener("click", loadFact);
 
-locationBtn.addEventListener("click", function() {
-	if(!("geolocation" in navigator)) {
-		locationDisplay.textContent = "Geolocation isn't supported.";
-		return;
-	}
+locationBtn.addEventListener("click", function () {
+  if (!("geolocation" in navigator)) {
+    locationDisplay.textContent = "Geolocation isn't supported.";
+    return;
+  }
 
-	navigator.geolocation.getCurrentPosition(function(position) {
-		const lat = position.coords.latitude.toFixed(2);
-		const lon = position.coords.longitude.toFixed(2);
-		locationDisplay.textContent = `You're near ${lat}, ${lon}`;
-	} , function(error) {
-		locationDisplay.textContent = "Location access was denied.";
-		console.warn(error);
-	});
+  navigator.geolocation.getCurrentPosition(
+    function (position) {
+      const lat = position.coords.latitude.toFixed(2);
+      const lon = position.coords.longitude.toFixed(2);
+      locationDisplay.textContent = `You're near ${lat}, ${lon}`;
+    },
+    function (error) {
+      locationDisplay.textContent = "Location access was denied.";
+      console.warn(error);
+    },
+  );
 });
