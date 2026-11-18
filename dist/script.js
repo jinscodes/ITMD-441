@@ -10,9 +10,6 @@ const likeCount = document.querySelector("#like-count");
 const likeMessage = document.querySelector("#like-message");
 const locationBtn = document.querySelector("#location-btn");
 const locationDisplay = document.querySelector("#location-display");
-if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark");
-}
 const LikeCounter = {
     likes: Number(localStorage.getItem("likes")) || 0,
     increment() {
@@ -44,11 +41,30 @@ const updateLikeDisplay = () => {
         likeMessage.textContent = "";
     }
 };
-if (likeBtn) {
-    likeBtn.addEventListener("click", incrementLikes);
+if (likeBtn && likeCount) {
+    likeBtn.addEventListener("click", function () {
+        LikeCounter.increment();
+    });
 }
 else {
-    console.warn("like-btn not found on this page");
+    console.warn("Like button or count element missing from the page");
+}
+function formatLikes(value) {
+    if (typeof value === "string") {
+        return `${parseInt(value, 10)}, likes`;
+    }
+    return `${value} likes`;
+}
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+}
+function getStoredTheme() {
+    return localStorage.getItem("theme") === "dark" ? "dark" : "light";
+}
+function applyStoredTheme() {
+    if (getStoredTheme() === "dark") {
+        document.body.classList.add("dark-mode");
+    }
 }
 const themeBtn = document.querySelector("#theme-btn");
 themeBtn.addEventListener("click", function () {
@@ -103,9 +119,12 @@ locationBtn.addEventListener("click", function () {
         return;
     }
     navigator.geolocation.getCurrentPosition(function (position) {
-        const lat = position.coords.latitude.toFixed(2);
-        const lon = position.coords.longitude.toFixed(2);
-        locationDisplay.textContent = `You're near ${lat}, ${lon}`;
+        const here = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+        };
+        locationDisplay.textContent = `You're near ${here.latitude.toFixed(2)}, ${here.longitude.toFixed(2)}`;
     }, function (error) {
         locationDisplay.textContent = "Location access was denied.";
         console.warn(error);

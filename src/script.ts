@@ -6,15 +6,11 @@ let likes = 0;
 labsCompleted = labsCompleted + 1;
 console.log(`${studentName} has completed ${labsCompleted} labs.`);
 
-const likeBtn = document.querySelector("#like-btn");
-const likeCount = document.querySelector("#like-count");
+const likeBtn = document.querySelector<HTMLButtonElement>("#like-btn");
+const likeCount = document.querySelector<HTMLParagraphElement>("#like-count");
 const likeMessage = document.querySelector("#like-message");
 const locationBtn = document.querySelector("#location-btn");
 const locationDisplay = document.querySelector("#location-display");
-
-if (localStorage.getItem("theme") === "dark") {
-  document.body.classList.add("dark");
-}
 
 const LikeCounter = {
   likes: Number(localStorage.getItem("likes")) || 0,
@@ -51,10 +47,35 @@ const updateLikeDisplay = () => {
   }
 };
 
-if (likeBtn) {
-  likeBtn.addEventListener("click", incrementLikes);
+if (likeBtn && likeCount) {
+  likeBtn.addEventListener("click", function () {
+    LikeCounter.increment();
+  });
 } else {
-  console.warn("like-btn not found on this page");
+  console.warn("Like button or count element missing from the page");
+}
+
+function formatLikes(value: number | string): string {
+  if (typeof value === "string") {
+    return `${parseInt(value, 10)}, likes`;
+  }
+  return `${value} likes`;
+}
+
+type Theme = "light" | "dark";
+
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+}
+
+function getStoredTheme(): Theme {
+  return localStorage.getItem("theme") === "dark" ? "dark" : "light";
+}
+
+function applyStoredTheme() {
+  if (getStoredTheme() === "dark") {
+    document.body.classList.add("dark-mode");
+  }
 }
 
 const themeBtn = document.querySelector("#theme-btn");
@@ -97,7 +118,7 @@ interface CatFact {
   length: number;
 }
 
-async function loadFact() {
+async function loadFact(): Promise<void> {
   factDisplay.textContent = "Loading...";
   factBtn.disabled = true;
   try {
@@ -118,6 +139,12 @@ async function loadFact() {
 
 factBtn.addEventListener("click", loadFact);
 
+interface UserLocation {
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+}
+
 locationBtn.addEventListener("click", function () {
   if (!("geolocation" in navigator)) {
     locationDisplay.textContent = "Geolocation isn't supported.";
@@ -126,9 +153,12 @@ locationBtn.addEventListener("click", function () {
 
   navigator.geolocation.getCurrentPosition(
     function (position) {
-      const lat = position.coords.latitude.toFixed(2);
-      const lon = position.coords.longitude.toFixed(2);
-      locationDisplay.textContent = `You're near ${lat}, ${lon}`;
+      const here: UserLocation = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+      };
+      locationDisplay!.textContent = `You're near ${here.latitude.toFixed(2)}, ${here.longitude.toFixed(2)}`;
     },
     function (error) {
       locationDisplay.textContent = "Location access was denied.";
